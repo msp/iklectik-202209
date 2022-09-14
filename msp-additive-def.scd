@@ -9,7 +9,7 @@ s.plotTree;
 (
 ~numPartials = 280;
 ~maxScopeChannels = 80;
-~envSteps = 32;
+~envSteps = 8;
 ~numPartials.dump;
 ~synths = [];
 ~seq;
@@ -44,7 +44,8 @@ s.plotTree;
 ~scope.index = ~vizBus.index;
 ~scope.numChannels = 30;
 ~scope.zoom =  1.4;
-~scope.yZoom = 16;
+~scope.yZoom = 1.0;
+~scope.zoom = 0.5;
 ~scope.style = 0;
 )
 
@@ -69,7 +70,9 @@ var envSteps = ~envSteps;
 var envTimeScale = 4;
 var n = (1..numPartials);
 var freq = 55;
-var freqChoices = [55, 110, 165, 220, 275, 660];
+// var freqChoices = [55, 110, 165, 220, 275, 660];
+// var freqChoices = [55];
+var freqChoices = [55, 110, 165];
 var freqs = [];
 var levels = [];
 var tilt = -3;
@@ -92,10 +95,8 @@ var randWait = 2;
 		mixerSub = 0;
 
 		// Sometimes go very lowercase with <= 30 partials
-		// if(0.4.coin) {
-		if(0.8.coin) {
+		if(0.45.coin) {
 			n = (1..(numPartials.min(rrand(2, 30))));
-			// mixerWhite = 0.04;
 		} {
 			n = (1..numPartials);
 		};
@@ -107,7 +108,7 @@ var randWait = 2;
 
 		// http://doc.sccode.org/Guides/GUI-Introduction.html#Caution:%20GUI%20and%20timing
 		{
-			scopeStyle = [0, 2].wchoose([0.92, 0.08]);
+			scopeStyle = [0, 2].wchoose([0.7, 0.3]);
 
 			// ~scope.dump;
 			~scope.index = ~vizBus.index;
@@ -126,21 +127,27 @@ var randWait = 2;
 			} {
 				// ~scope.zoom =  [0, 1, 2].wchoose([0.65, 0.25, 0.10]);
 				~scope.zoom =  1.2.rand;
-				~scope.yZoom = [8, 10, 12].wchoose([0.33, 0.33, 0.34]);
+				~scope.yZoom = rrand(0.5, 6.0);
 			};
 			~scope.style = scopeStyle;
 		}.defer;
 
 		("-MSP PARTIALS ("+n.size+")----------------------------- ").postln;
 
-		freq = freqChoices.choose;
+		if(0.1.coin) {
+			freq = freqChoices.rand;
+		} {
+			freq = freqChoices.choose;
+		};
+
 		("-MSP FREQ ("+freq+")--------------------------------- ").postln;
 		freqs = freq * n;
 
-		if(0.7.coin) {
-			envTimeScale = rrand(2,4);
+
+		if(0.4.coin) {
+			envTimeScale = rrand(3,8);
 		} {
-			envTimeScale = rrand(14, 23);
+			envTimeScale = rrand(14, 27);
 		};
 
 		//tilt EQ to roll off harsh highs
@@ -160,6 +167,7 @@ var randWait = 2;
 				freqs.collectInPlace{|x,i| if((i%2) == 0) {levels.put(i,0.0); x;} {x;}};
 			} {};
 		} {
+			"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!".postln;
 			"freqs.size: ".post;
 			freqs.size.postln;
 			"levels.size: ".post;
@@ -259,11 +267,12 @@ var randWait = 2;
 					\mixerSub: mixerSub,
 					// \mixerSub: 0,
 				\envTimeScale: envTimeScale,
-					envDuration: dur
+					envDuration: dur,
+					scopeStyle: scopeStyle
 			])
 		);
 
-		randWait = rrand((dur * 0.7), (dur + 2 ));
+		randWait = rrand((dur * 0.7), (dur + 5.rand ));
 		("-MSP DUR / WAIT ("+ dur + "/"+ randWait +")***************************** ").postln;
 
 		randWait.wait;
@@ -279,8 +288,8 @@ var randWait = 2;
 
 (
 SynthDef(\mspAdder, {
-	| out = 0, vizOut = 5, envTimeScale = 1, mixerWhite = 0.01, mixerSub = 3, envDuration = 1 |
-	var snd, freqMult, n, env, env2, envShape;
+	| out = 0, vizOut = 5, envTimeScale = 1, mixerWhite = 0.01, mixerSub = 3, envDuration = 1, scopeStyle = 0 |
+	var snd, freqMult, n, env, env2, envShape, vizSig;
 	var numPartials = ~numPartials;
 	var envSteps = ~envSteps;
 	var factor = 2;
@@ -291,10 +300,7 @@ SynthDef(\mspAdder, {
 	var pairs = NamedControl.kr(\pairs, defaultPairs);
 	var pairs2 = NamedControl.kr(\pairs2, defaultPairs);
 
-	"-MSP numPartials ------------------------------------ ".postln;
-	numPartials.dump;
-
-	n = (1..numPartials);
+	n = (1..freqs.size);
 	// Window.closeAll;
 
 	"-MSP freqs ------------------------------------ ".postln;
@@ -304,7 +310,7 @@ SynthDef(\mspAdder, {
 
 	envShape = Env.pairs(pairs, \exp);
 	// envShape = Env.perc(0.05, 3, 1, -4);
-	env =  EnvGen.ar(envShape, timeScale: envTimeScale, levelScale: 1,doneAction: Done.freeSelf);
+	env =  EnvGen.ar(envShape, timeScale: envTimeScale, levelScale: 1.0,doneAction: Done.freeSelf);
 
 	envShape = Env.pairs(pairs2, \exp);
 	// envShape = Env.perc(0.05, 3, 1, -4);
@@ -319,18 +325,17 @@ SynthDef(\mspAdder, {
 	// levels = levels * env2;
 
 	snd = SinOsc.ar(freqs, 0.0, levels);
-	// snd = SinOsc.ar(220, 0.0, 1.0);
 
 	snd = snd.addFirst(
 		Resonz.ar(
 			WhiteNoise.ar(1.5),
 			env2 * 20000,
-			0.5,
+			0.8,
 		mixerWhite)
 	);
-	snd = snd.addFirst(
-		SinOsc.ar(50, 0, mixerSub) * env;
-	);
+	// snd = snd.addFirst(
+	// 	SinOsc.ar(50, 0, mixerSub) * env;
+	// );
 
 	// SCOPE TESTS
 	// SinOsc.ar(freqs[0] + freqs[1], 0.0, levels[0] + levels[1]).scope;
@@ -338,18 +343,25 @@ SynthDef(\mspAdder, {
 	// Grab a subset of partials for the viz bus
 	// (we only want to send a max of 80ch to the scope, seems to bork with more)
 	factor = ~factor.value(freqs.size);
-	Out.ar(vizOut, snd[0, factor..]);
 
-	// audioBus verison
-	// snd = snd * -20.dbamp;
-	// Out.ar(out, snd);
+	// I think we want diff partials depending on the viz type we use
+	// although actually, maybe it doesn't actually matter!
+	vizSig = Select.ar(
+		scopeStyle,
+		[
+			snd[1, factor..],
+			[snd[2], snd[3]]
+		]
+	);
+
+	Out.ar(vizOut, vizSig);
 
 	// stop pops at the end of the sound
 	snd = snd * EnvGen.ar(
 		// Env.cutoff(1, 0.95),
 		// Env.asr(0.3, 0.9, 1.0),
 		// Env.sine(envDuration),
-		Env.linen(0.001, (envDuration - 0.2), 0.2, 0.95),
+		Env.linen(0.001, (envDuration - 0.5), 0.5, 0.95),
 		// Env.linen(0.001, 0.2, 0.1, 0.95, \lin),
 		// timeScale: envDuration,
 		doneAction: Done.freeSelf

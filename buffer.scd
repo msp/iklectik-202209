@@ -105,8 +105,12 @@ var pairsRand = [
 	[1.0, 0.001]
 ];
 var n = (1..numPartials);
+var envShape = Env.pairs(pairsRand, \exp);
+var env = EnvGen.ar(envShape, timeScale: 1, levelScale: 1, doneAction: Done.freeSelf);
 
-var env2 = Env.pairs(pairsRand, \exp).plot;
+levels.postln;
+levels = levels * (1 - log2(n * env).sin.abs);
+levels.postln;
 )
 
 levels = levels * (1 - log2(n * env2).sin.abs);
@@ -118,6 +122,8 @@ dur.postln;
 )
 
 [5,1,2,4].sort.reverse[0];
+
+[1,2,3,4,5,6,7,8,9][0..1]
 
 (
 if(0.5.coin) {
@@ -152,3 +158,64 @@ ar[0, factor..].postln;
 0.1.floor.max(1)
 
 1.2.rand
+
+
+Env.asr(0.001, 0.9, 1.0).plot;
+
+165 * (1..2);
+
+200.min(30.rand)
+
+-25.dbamp
+
+(
+{
+loop({
+    play({
+        var nPartials = 12, nChans = 5, n = nPartials * nChans;
+        Splay.ar(Klang.ar(`[ { { rrand(200.0, 2000.0) } ! nPartials } ! nChans, nil, nil ], 1, 0))
+             * EnvGen.kr(Env.sine(4), 1, 0.02, doneAction: Done.freeSelf);
+    });
+    5.wait;
+})
+}.fork;
+)
+
+
+5.mod(2pi)
+
+pi
+2pi
+
+SynthDef(\mspAdderTest, {
+	| out = 0, vizOut = 5, envTimeScale = 1, mixerWhite = 0.01, mixerSub = 3, envDuration = 1 |
+	var snd, freqMult, n, env, env2, envShape;
+	var numPartials = ~numPartials;
+	// var envSteps = ~envSteps;
+	var envSteps = 8;
+	var factor = 2;
+	var defaultPairs = { { rrand(0.01, 1) } ! 2 } ! envSteps;
+	var freqs = NamedControl.kr(\freqs, {55}!numPartials);
+	var levels = NamedControl.kr(\levels, {0.1}!numPartials);
+	var pairs = NamedControl.kr(\pairs, defaultPairs);
+	var pairs2 = NamedControl.kr(\pairs2, defaultPairs);
+
+	snd = SinOsc.ar(freqs, 0.0, levels);
+
+	// stop pops at the end of the sound
+	snd = snd * EnvGen.ar(
+		// Env.cutoff(1, 0.95),
+		// Env.asr(0.3, 0.9, 1.0),
+		// Env.sine(envDuration),
+		Env.linen(0.01, (envDuration - 0.2), 0.2, 0.95),
+		// Env.linen(0.001, 0.2, 0.1, 0.95, \lin),
+		// timeScale: envDuration,
+		doneAction: Done.freeSelf
+	);
+
+	snd = snd * -45.dbamp;
+	// snd = Limiter.ar(snd);
+	// snd = FreeVerb.ar(snd, 0.33, 0.7, 0.4);
+	// snd = LeakDC.ar(snd);
+	Out.ar(out, snd.sum!2);
+}).add;
