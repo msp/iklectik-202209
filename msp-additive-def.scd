@@ -9,7 +9,7 @@ s.plotTree;
 (
 ~numPartials = 280;
 ~maxScopeChannels = 80;
-~envSteps = 8;
+~envSteps = 32;
 ~numPartials.dump;
 ~synths = [];
 ~seq;
@@ -83,6 +83,7 @@ var dur;
 var tmpViz = [];
 var factor = 2;
 var scopeStyle = 0;
+var randWait = 2;
 
 ~seq = Routine {
     inf.do({ arg count;
@@ -93,7 +94,7 @@ var scopeStyle = 0;
 		// Sometimes go very lowercase with <= 30 partials
 		// if(0.4.coin) {
 		if(0.8.coin) {
-			n = (1..(numPartials.min(30.rand)));
+			n = (1..(numPartials.min(rrand(2, 30))));
 			// mixerWhite = 0.04;
 		} {
 			n = (1..numPartials);
@@ -135,12 +136,8 @@ var scopeStyle = 0;
 		freq = freqChoices.choose;
 		("-MSP FREQ ("+freq+")--------------------------------- ").postln;
 		freqs = freq * n;
-		// envStepsMult = rrand(8,16); // the steps must be fixed in the synthdef
 
-
-		// envTimeScale = rrand(1,3);
-
-		if(0.5.coin) {
+		if(0.7.coin) {
 			envTimeScale = rrand(2,4);
 		} {
 			envTimeScale = rrand(14, 23);
@@ -190,6 +187,7 @@ var scopeStyle = 0;
 			levels.collectInPlace{|x,i| if((i%5) == 0) {x = x * 0.5;} {x;}};
 		} {};
 
+		("-MSP FREQS --------------------------------------------- ").postln;
 		freqs.postln;
 
 		// LEVELS ////////////////////////////////////////////////////////
@@ -212,21 +210,28 @@ var scopeStyle = 0;
 
 		// ENV ///////////////////////////////////////////////////////////
 		pairsRand = { { rrand(0.01, 1.0) } ! 2 } ! envSteps;
-		// pairsRand = { [1.0.rand, rrand(0., 0.8)] } ! envSteps;
+
+		// Don't start at zero else it pops!
+		// pairsRand = [
+		// 	[0.001, 0.001],
+		// 	[0.05, 0.9],
+		// 	[0.5, 0.5],
+		// 	[0.6, 0.4],
+		// 	[0.7, 0.3],
+		// 	[0.8, 0.2],
+		// 	[0.9, 0.1],
+		// 	[1.0, 0.001]
+		// ];
 
 		// the length of the ENV will be the max time value in the [time,level] pairs
 		// times the scale
 		dur = pairsRand.collect{|x,i| x[0]; }.sort.reverse[0] * envTimeScale;
-		// pairsRand = { { 1.0.rand } ! 2 } ! 8;
-		//
-		// pairs = [ [ 0.46644532680511, 0.95408070087433 ], [ 0.79316735267639, 0.72445929050446 ], [ 0.66931366920471, 0.13437724113464 ], [ 0.45547497272491, 0.63586318492889 ], [ 0.46265351772308, 0.66731905937195 ] ];
 
 		("-MSP DUR ("+dur+")------------------------- ").postln;
 		("-MSP ENV ---------------------------------- ").postln;
-		// pairs = pairs ++ [[1.0, 0.001]];
+
 		pairs = pairsRand.collect{|x,i| [x[1], x[0]] };
 		pairs2 = pairsRand.collect{|x,i| [x[1], x[0]] };
-		// pairs2 = pairs;
 
 		// {
 		// 	Env.pairs(pairs, \exp).plot;
@@ -253,39 +258,31 @@ var scopeStyle = 0;
 					// \mixerWhite: 0,
 					\mixerSub: mixerSub,
 					// \mixerSub: 0,
-				\envTimeScale: envTimeScale
+				\envTimeScale: envTimeScale,
+					envDuration: dur
 			])
 		);
 
-		rrand(dur/6, (dur + 2)).wait;
-		// (dur + 2).wait;
+		randWait = rrand((dur * 0.7), (dur + 2 ));
+		("-MSP DUR / WAIT ("+ dur + "/"+ randWait +")***************************** ").postln;
+
+		randWait.wait;
     });
     // Wait half second before saying we're done
     0.5.wait;
-    "done".postln;
+    "done!".postln;
 }.play;
 
 )
 
-~vizBus.index;
-
-~vizBus.dump;
-
-~vizBus.scope;
-
-
-
-// ~vizBus.kr(60).poll;
-
-
+// SYNTHDEF ////////////////////////////////////////////////////////
 
 (
 SynthDef(\mspAdder, {
-	| out = 0, vizOut = 5, envTimeScale = 1, mixerWhite = 0.01, mixerSub = 3 |
+	| out = 0, vizOut = 5, envTimeScale = 1, mixerWhite = 0.01, mixerSub = 3, envDuration = 1 |
 	var snd, freqMult, n, env, env2, envShape;
 	var numPartials = ~numPartials;
-	// var envSteps = ~envSteps;
-	var envSteps = 8;
+	var envSteps = ~envSteps;
 	var factor = 2;
 	var defaultPairs = { { rrand(0.01, 1) } ! 2 } ! envSteps;
 
@@ -311,17 +308,18 @@ SynthDef(\mspAdder, {
 
 	envShape = Env.pairs(pairs2, \exp);
 	// envShape = Env.perc(0.05, 3, 1, -4);
-	env2 = EnvGen.ar(envShape, timeScale: envTimeScale, levelScale: 1, doneAction: Done.freeSelf);
+	env2 = EnvGen.kr(envShape, timeScale: envTimeScale, levelScale: 0.5, doneAction: Done.freeSelf);
 
-
+	//
 	// SHAPING /////////////////////////////////////////////////////
 	// freqs.collectInPlace{|x,i| x * env2  };
-	// levels = levels * (1 - log2(n * Line.kr(\comb1.kr(1), \comb2.kr(20), envTimeScale)).sin.abs);
-
+	// levels = levels * (1 - log2(n * Line.kr(\comb1.kr(1), \comb2.kr(4), envTimeScale)).sin.abs);
+	// levels = levels * (1 - log2(n * MouseX.kr(1,16) + MouseY.kr(1,100)).sin.abs);
 	levels = levels * (1 - log2(n * env2).sin.abs);
 	// levels = levels * env2;
 
 	snd = SinOsc.ar(freqs, 0.0, levels);
+	// snd = SinOsc.ar(220, 0.0, 1.0);
 
 	snd = snd.addFirst(
 		Resonz.ar(
@@ -346,18 +344,31 @@ SynthDef(\mspAdder, {
 	// snd = snd * -20.dbamp;
 	// Out.ar(out, snd);
 
+	// stop pops at the end of the sound
+	snd = snd * EnvGen.ar(
+		// Env.cutoff(1, 0.95),
+		// Env.asr(0.3, 0.9, 1.0),
+		// Env.sine(envDuration),
+		Env.linen(0.001, (envDuration - 0.2), 0.2, 0.95),
+		// Env.linen(0.001, 0.2, 0.1, 0.95, \lin),
+		// timeScale: envDuration,
+		doneAction: Done.freeSelf
+	);
+
 	// stereo out version
 	// either..
-	snd = snd.sum ! 2;
+	// snd = snd.sum ! 2;
+	// snd = snd ! 2;
     // or
 	// stereo spread
 	// snd = snd[0,2..].sum + ([-1,1] * snd[1,3..].sum);
 
-	snd = snd * -30.dbamp;
-	snd = FreeVerb.ar(snd, 0.33, 0.7, 0.4, 1);
-	snd = Limiter.ar(snd);
-	snd = LeakDC.ar(snd);
-	Out.ar(out, snd);
+	snd = snd * -35.dbamp;
+	// These cause pops it seems :/
+	// snd = FreeVerb.ar(snd, 0.33, 0.7, 0.4, 1);
+	// snd = Limiter.ar(snd);
+	// snd = LeakDC.ar(snd);
+	Out.ar(out, snd.sum ! 2);
 }).add;
 )
 
