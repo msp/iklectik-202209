@@ -1,12 +1,13 @@
 
 
-
+(
 // we create a SynthDef
-SynthDef(\oscsynth, { arg bufnum, freq = 440, ts= 1;
-	a = Osc.ar(bufnum, freq, 0, 0.2) * EnvGen.ar(Env.perc(0.01), timeScale:ts, doneAction:2);
+SynthDef(\oscsynth, {
+	arg bufnum, freq = 440, ts = 1;
+	a = Osc.ar(bufnum, freq, 0, 0.2) * EnvGen.ar(Env.perc(0.01), timeScale: ts, doneAction:2);
 	Out.ar(0, a ! 2);
 }).add;
-
+)
 // and then we fill the buffer with our waveform and generate the GUI
 (
 var bufsize, ms, slid, cspec, freq;
