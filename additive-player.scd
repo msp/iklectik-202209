@@ -39,6 +39,9 @@ var randWait = 2;
 
 ~seq = Routine {
     inf.do({ arg count;
+		~bufferA.dump;
+		~bufferB.dump;
+
 		mixerWhite = rrand(0.01, 0.08);
 		// mixerSub = rrand(0.5,5);
 		mixerSub = 0;

@@ -76,15 +76,16 @@ SynthDef(\mspAdder, {
 	levels = levels * (1 - log2(n * env2).sin.abs);
 	// levels = levels * env2;
 
-	snd = SinOsc.ar(freqs, 0.0, levels);
+	// snd = SinOsc.ar(freqs, 0.0, levels);
+	snd = SinOsc.ar([220, 440], 0.0, 0.5);
 
-	snd = snd.addFirst(
-		Resonz.ar(
-			WhiteNoise.ar(1.5),
-			env2 * 20000,
-			0.8,
-		mixerWhite)
-	);
+	// snd = snd.addFirst(
+	// 	Resonz.ar(
+	// 		WhiteNoise.ar(1.5),
+	// 		env2 * 20000,
+	// 		0.8,
+	// 	mixerWhite)
+	// );
 	// snd = snd.addFirst(
 	// 	SinOsc.ar(50, 0, mixerSub) * env;
 	// );
@@ -98,15 +99,19 @@ SynthDef(\mspAdder, {
 
 	// I think we want diff partials depending on the viz type we use
 	// although actually, maybe it doesn't actually matter!
-	vizSig = Select.ar(
-		scopeStyle,
-		[
-			snd[1, factor..],
-			[snd[2], snd[3]]
-		]
-	);
+	// vizSig = Select.ar(
+	// 	scopeStyle,
+	// 	[
+	// 		snd[1, factor..],
+	// 		[snd[2], snd[3]]
+	// 	]
+	// );
 
-	Out.ar(vizOut, vizSig);
+	vizSig = snd;
+
+	// Out.ar(vizOut, vizSig);
+	ScopeOut2.ar(vizSig , ~bufferA);
+	// ScopeOut2.ar(klank, ~bufferA);
 
 	// stop pops at the end of the sound
 	snd = snd * EnvGen.ar(
