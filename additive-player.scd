@@ -19,9 +19,9 @@ var envSteps = ~envSteps;
 var envTimeScale = 4;
 var n = (1..numPartials);
 var freq = 55;
-// var freqChoices = [55, 110, 165, 220, 275, 660];
+var freqChoices = [55, 110, 165, 220, 275, 660];
 // var freqChoices = [55];
-var freqChoices = [55, 110, 165];
+// var freqChoices = [55, 110, 165];
 var freqs = [];
 var levels = [];
 var tilt = -3;
@@ -221,7 +221,7 @@ var randWait = 2;
 			])
 		);
 
-		randWait = rrand((dur * 0.7), (dur + 5.rand ));
+		randWait = rrand((dur * 0.6), (dur + 3.rand ));
 		("-MSP DUR / WAIT ("+ dur + "/"+ randWait +")***************************** ").postln;
 
 		randWait.wait;

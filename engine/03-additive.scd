@@ -113,7 +113,7 @@ SynthDef(\mspAdder, {
 		// Env.cutoff(1, 0.95),
 		// Env.asr(0.3, 0.9, 1.0),
 		// Env.sine(envDuration),
-		Env.linen(0.001, (envDuration - 0.5), 0.5, 0.95),
+		Env.linen(0.001, (envDuration - 1.0), 1.0, 0.95),
 		// Env.linen(0.001, 0.2, 0.1, 0.95, \lin),
 		// timeScale: envDuration,
 		doneAction: Done.freeSelf
