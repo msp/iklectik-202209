@@ -1,4 +1,136 @@
 (
+Tdef(\x, {
+	var cps = 2;
+	60.do {
+		~d1.((
+			// sound: 'sd:8',
+			sound: 'sd:0',
+			begin: 0,
+			end: 1,
+			speed: 1,
+			vowel: "aeiou".choose.asSymbol,
+			resonance: 0.4.rand,
+			// cutoff: rrand(540, 1000),
+			// cutoff: rrand(540, 3000),
+			gain: 0.8)
+		);
+		// cps = cps + 0.3;
+		// (1/cps).wait;
+		(1/4.67).wait;
+		// (0.3 * [1, 2, 1/3]).choose.wait;
+	}
+}).play;
+)
+
+(
+Tdef(\x, {
+	var cps = 2;
+	60.do {
+		~d1.((
+			// sound: 'sd:8',
+			sound: 'hh:0',
+			begin: 0,
+			end: 1,
+			speed: 1,
+			vowel: "aeiou".choose.asSymbol,
+			resonance: 0.4.rand,
+			// cutoff: rrand(540, 1000),
+			// cutoff: rrand(540, 3000),
+			gain: 0.9)
+		);
+		// cps = cps + 0.3;
+		// (1/cps).wait;
+		(1/4.67).wait;
+		// (0.3 * [1, 2, 1/3]).choose.wait;
+	}
+}).play;
+)
+
+Tdef(\x).stop;
+
+(
+Tdef(\z, {
+	var name = '808cy:11';
+	var cps = 2;
+	40.do {
+		~d1.(
+			(
+				cps:cps,
+				speed: 1.4,
+				sound:name,
+				unit: \r,
+				// begin: rrand(0, 0.3),
+				begin: 0,
+				end: 1,
+				gain: 0.8
+
+			)
+		);
+		cps = cps + 0.03;
+		(1/cps).wait;
+	}
+}).play
+)
+
+Tdef(\z).stop;
+
+(
+Tdef(\y, {
+	40.do {
+		~d1.(
+			(
+				sound: '808cy:11',
+				speed: rrand(0.1, 2.0),
+				begin:1.0.rand,
+				end: 2.0.rand,
+				// accelerate:1.0.rand,
+				hcutoff: rrand(2000, 4000),
+				hresonance: 0.2.rand,
+				delay: 1.0.rand,
+				delaytime: 1/4,
+				delayfeedback: 0.6,
+				gain: 0.7
+
+		));
+		1.wait;
+	}
+}).play;
+)
+
+Tdef(\y).stop;
+
+(
+Tdef(\space, {
+	40.do {
+		~d1.(
+			(
+				sound: 'space:0',
+				speed: rrand(0.5, 2.0),
+				begin:1.0.rand,
+				// end: 2.0.rand,
+				// accelerate:1.0.rand,
+				// hcutoff: rrand(2000, 4000),
+				// hresonance: 0.2.rand,
+				delay: 1.0.rand,
+				delaytime: 1/4,
+				delayfeedback: 0.6,
+				gain: 0.9
+
+		));
+		30.wait;
+	}
+}).play;
+)
+
+Tdef(\space).stop;
+
+
+~d3
+
+
+
+
+(
 var ixa;
 
 ixa = { |freq, in, index|
