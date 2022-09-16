@@ -44,8 +44,8 @@ Pdef(\industrial,
 			\speed, Pseq([Prand([0.2, 0.1, 0.5, 1.2])], inf),
 			\dur, Pseq([8, 10, 12, Rest(10)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\room, Pseq([0.7, 0.25, 0.75, 1], inf),
-			\size, Pseq([0.6, 0.25, 0.75, 1], inf),
+			\room, Pseq([0.7, 0.25, 0.75, 0.6], inf),
+			\size, Pseq([0.6, 0.25, 0.75, 0.5], inf),
 			\shape, 0.5,
 			// \crush, 4,
 			\gain, 0.85,
@@ -64,8 +64,8 @@ Pdef(\rainpool,
 			\speed, Pseq([0.2, 0.1, 0.5, 1.2], inf),
 			\dur, Pseq([8, Rest(2)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\room, Pseq([0, 0.25, 0.75, 1], inf),
-			\size, Pseq([1, 0.75, 0.25, 0], inf),
+			\room, Pseq([0, 0.25, 0.75, 0.6], inf),
+			\size, Pseq([0.6, 0.75, 0.25, 0], inf),
 			\gain, 0.85,
 			\orbit, ~out1
 		)
@@ -82,8 +82,8 @@ Pdef(\pool,
 			\speed, Pseq([Prand([0.2, 0.5, 1])], inf),
 			\dur, Pseq([32, Rest(32)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\room, Pseq([0, 0.25, 0.75, 1], inf),
-			\size, Pseq([1, 0.75, 0.25, 0], inf),
+			\room, Pseq([0, 0.25, 0.75, 0.8], inf),
+			\size, Pseq([0.6, 0.75, 0.25, 0], inf),
 			\gain, 0.85,
 			\orbit, ~out6
 		)
@@ -100,8 +100,8 @@ Pdef(\charger,
 			\speed, Pseq([Prand([0.2, 0.5, 1, 2])], inf),
 			\dur, Pseq([8, Rest(6)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\room, Pseq([0, 0.25, 0.75, 1], inf),
-			\size, Pseq([1, 0.75, 0.25, 0], inf),
+			\room, Pseq([0, 0.25, 0.75, 0.8], inf),
+			\size, Pseq([0.6, 0.75, 0.25, 0], inf),
 			\comb, Pseq([Prand([0.2, 0.5, 0.8])], inf),
 			\hbrick, Pseq([Pwrand([0, 0.1, 0.2],[0.7, 0.2, 0.1])], inf),
 			\gain, 0.7,
@@ -140,7 +140,7 @@ Pdef(\cymbals,
 			\dur, Pseq([Prand([5, Rest(8), 10])], inf),
 			// \dur, Pseq([Prand([3])], inf),
 			\crush, 6,
-			\room, Pseq([0, 0.25, 0.75, 1], inf),
+			\room, Pseq([0, 0.25, 0.75, 0.6], inf),
 			\size, Pseq([1, 0.75, 0.25, 0], inf),
 			\comb, 0.5,
 			\hbrick, Pseq([Pwrand([0, 0.1, 0.2],[0.7, 0.2, 0.1])], inf),
@@ -219,8 +219,8 @@ Pdef(\cellophane,
 			\speed, Pseq([Prand([2, 1, 0.6])], inf),
 			\dur, Pseq([16, Rest(8)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\room, Pseq([0, 0.25, 0.75, 1], inf),
-			\size, Pseq([1, 0.75, 0.25, 0], inf),
+			\room, Pseq([0, 0.25, 0.75, 0.6], inf),
+			\size, Pseq([0.5, 0.75, 0.25, 0], inf),
 			\hcutoff, 8300,
 			\gain, 0.85,
 			\orbit, ~out1
@@ -758,7 +758,7 @@ Pdef(\kicker,
 			// \shape, 0.8,
 			// \crush, Pwrand([50, 4], [20, 1].normalizeSum, inf),
 			// \pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
-			\gain, Pwhite(0.35, 0.45, inf),
+			\gain, Pwhite(0.35, 0.55, inf),
 			\orbit, ~out1
 		),
 		Pbind(
@@ -1193,6 +1193,53 @@ Pdef(\spinner,
 	])
 );
 
+//// space //////////////////////////////////////////////////////////////////
+Pdef(\space,
+	Ppar([
+		Pbind(
+			\type, \dirt,
+			\s, \space,
+			\n, 1,
+			\speed, Pseq([1], inf),
+			\dur, 1.8,
+			\begin, Pseq([0.0, 0.1, 0.2, 0.3, 0.4], inf),
+			\end, Pseq([0.2, 0.3, 0.4, 0.5, 0.6], inf),
+			// \shape, 0.4,
+			\hcutoff, Pexprand(150, 1000, inf),
+			// \hcutoff, Pfuncn({ |x| if(x > (1/2), 150, 5000) }, inf) <> Pkey(\dur),
+			// \djf, 0.7,
+			// \cutoff, 500,
+			\room, Pseq([0.55, 0.25, 0], inf),
+			\size, Pseq([0.2, 0.55, 0.25, 0], inf),
+			\pan, Pseq([Prand([0.4, 0.6])], inf),
+			\gain, 1.3,
+			\orbit, ~out1
+		)
+	])
+);
+
+//// crackle //////////////////////////////////////////////////////////////////
+Pdef(\crackle,
+	Ppar([
+		Pbind(
+			\type, \dirt,
+			\s, \crackle,
+			\n, 0,
+			\speed, Pseq([0.7], inf),
+			\dur, 6.5,
+			// \begin, Pseq([0.0, 0.1, 0.2, 0.3, 0.4], inf),
+			// \end, Pseq([0.2, 0.3, 0.4, 0.5, 0.6], inf),
+			// \shape, 0.4,
+			\hcutoff, Pexprand(150, 1000, inf),
+			// \room, Pseq([0.55, 0.25, 0], inf),
+			// \size, Pseq([0.2, 0.55, 0.25, 0], inf),
+			\pan, Pseq([Prand([0.4, 0.6])], inf),
+			\gain, 0.9,
+			\orbit, ~out1
+		)
+	])
+);
+
 //// submsp //////////////////////////////////////////////////////////////////
 Pdef(\submsp,
 	Ppar([
@@ -1222,9 +1269,10 @@ Pdef(\dancestabs,
 			\n, 4,
 			\speed, 1,
 			\begin, 0,
-			\end, 0.023,
+			// \end, 0.023,
+			// \dur, 3.43,
+			\dur, 110,
 			// \dur, Pseq([4, 3, Rest(5)], inf),
-			\dur, 3.43,
 			// \pan, Pseq([Prand([0.75, 1])], inf),
 			\phaserrate, 0.4,
 			\phaserdepth, 0.6,
@@ -1248,4 +1296,4 @@ Pdef(\dancestabs,
 Pdef.all.do(_.postln);
 )
 
-PdefAllGui(Pdef.all.size);
+// PdefAllGui(Pdef.all.size);
