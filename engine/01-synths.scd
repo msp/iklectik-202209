@@ -1,6 +1,7 @@
 (
 
-~rbus = Bus.audio(s,2);
+// ~rbus = Bus.audio(s,2);
+// ~reverbGroup = Group.new;
 
 // Scale.directory
 ~scale = Scale.ritusen;
@@ -128,12 +129,13 @@ SynthDef(\mspWaves, {
 
     sig = Splay.ar(sig); //spread 8 signals over stereo field
     sig = LeakDC.ar(sig); //remove DC bias
-    sig = Balance2.ar(sig[0], sig[1], pan, amp); //L/R balance (pan)
+	sig = Balance2.ar(sig[0], sig[1], pan, amp); //L/R balance (pan)
+	sig = Pan2.ar(sig, pan);
     sig = sig * env;
 
-    // Out.ar(out, sig);
+	Out.ar(out, sig!2 * -15.dbamp);
 	// Out.ar(rout, sig * rsend.dbamp); //"post-fader" send to reverb
-    OffsetOut.ar(out, DirtPan.ar(sig, ~dirt.numChannels, pan, env))
+	// OffsetOut.ar(out, DirtPan.ar(sig!2, ~dirt.numChannels, pan, env))
 }).add;
 
 SynthDef(\reverb, {
@@ -179,9 +181,9 @@ SynthDef(\mspVibSawPlucker, {
 // s.sync;
 
 //instantiate reverb and re-instantiate when cmd-period is pressed
-~add_reverb = {Synth(\reverb, [\in, ~rbus])};
-ServerTree.add(~add_reverb);
-s.freeAll;
+/*~add_reverb = {Synth(\reverb, [\in, ~rbus], ~reverbGroup)};
+ServerTree.add(~add_reverb);*/
+// s.freeAll;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
