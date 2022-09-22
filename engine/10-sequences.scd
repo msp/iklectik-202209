@@ -26,7 +26,7 @@ Pdef(\rumble,
 			\n, Pseq([0, 1], inf),
 			\speed, Pseq([0.2, 0.5], inf),
 			\dur, Pseq([16, Rest(1)], inf),
-			\gain, 1,
+			\gain, 1.2,
 			\room, Pseq([0, 0, 0.4], inf),
 			\orbit, ~out1
 		)
@@ -49,6 +49,30 @@ Pdef(\industrial,
 			\shape, 0.5,
 			// \crush, 4,
 			\gain, 0.85,
+			\orbit, ~out1
+		)
+	])
+);
+
+//// smash ////////////////////////////////////////////////////////////////
+Pdef(\smash,
+	Ppar([
+		Pbind(
+			\type, \dirt,
+			\s, \smash,
+			\n, Pseq([Prand((0..13))], inf),
+			// \n, 0,
+			\speed, Pseq([Prand([0.2, 0.1, 0.5, 1.2])], inf),
+			\dur, Pseq([8, 10, 12, Rest(10)], inf),
+			// \dur, 3,
+			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
+			// \room, Pseq([0.7, 0.25, 0.75, 0.6], inf),
+			// \size, Pseq([0.6, 0.25, 0.75, 0.5], inf),
+			// \comb, Pseq([Prand([0.2, 0.5, 0.8])], inf),
+			// \hbrick, Pseq([Pwrand([0, 0.1, 0.2],[0.7, 0.2, 0.1])], inf),
+			\shape, 0.4,
+			// \crush, 8,
+			\gain, 0.8,
 			\orbit, ~out1
 		)
 	])
@@ -118,7 +142,7 @@ Pdef(\seqtest,
 			\s, \cr,
 			\n, Pseq([1, 0, 1, 5], inf),
 			\speed, 1,
-			\dur, 8,
+			\dur, 1,
 			\gain, 0.8,
 			// \pan, Pseq([0.2, 0.4, 0.6, 0.8, 1], inf),
 			// \delaytime, 1/8,
@@ -184,7 +208,7 @@ Pdef (
 		// \freq, Pexprand(300, 600, inf),
 		\atk, Pwhite(2.0, 3.0, inf),
 		\rel, Pwhite(5.0, 15.0, inf),
-		\amp, Pkey(\harmonic).reciprocal * 0.2,
+		\amp, Pkey(\harmonic).reciprocal * 0.01,
 		\pan, Pwhite(-0.8, 0.8, inf),
 		// \orbit, ~out2
 		\out, ~out1
@@ -249,7 +273,7 @@ Pdef(\paper,
 //// pad ///////////////////////////////////////////////////////////////////////
 Pbindef(\pad,
 	\instrument, \mspWaves,
-	\dur, Pseq([Rest(10.rand), Prand([1,6,12]),2   , Rest(5.rand), 1.5, 0.5], inf),
+	\dur, Pseq([Rest(10.rand), Prand([1,6,12]),2, Rest(5.rand), 1.5, 0.5], inf),
 	\atk, Pexprand(3,6),
 	\sus, 0,
 	\rel, Pexprand(5,10),
@@ -262,8 +286,9 @@ Pbindef(\pad,
 		(-12,-10..12).scramble[0..rrand(1,3)]
 	}),
 	\amp, Pexprand(0.05,0.07),
-	\pan, Pwhite(-0.4,0.4),
-	\out, 14,
+	// \pan, Pwhite(0.2,0.6),
+	\pan, 0.5,
+	\out, 1,
 	\rout, ~rbus,
 	\rsend, -10,
 );
@@ -297,8 +322,8 @@ Pbindef(\pad2,
 	],inf),
 	\amp, Pseq([0,0.18,0.24,0.28],inf),
 	\out, 1,
-	\rout, ~rbus,
-	\rsend, -6,
+	// \rout, ~rbus,
+	// \rsend, -6,
 );
 
 //// bells /////////////////////////////////////////////////////////////////////
@@ -553,7 +578,7 @@ Pdef(\sunrise,
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
 			\room, Pseq([0.5, 0.25], inf),
 			\size, Pseq([0.5, 0.25], inf),
-			\gain, 0.7,
+			\gain, 0.8,
 			\orbit, ~out1
 		),
 	])
@@ -682,14 +707,14 @@ Pdef(\pulser,
 				Pseq([0.8], 4),
 			], inf),
 			\speed, 1,
-			\cutoff, Pwrand([50, 100, 150, 5000], [20, 10, 5, 1].normalizeSum, inf),
+			\cutoff, Pwrand([50, 100, 150, 1500], [20, 10, 8, 1].normalizeSum, inf),
 			// \dur, Pwhite(1.15, 1.25, inf) / 8,
 			// \amp, Pbjorklund(3, 5, inf),
 			// \dur, 1,
 			// \dur, Pseq([2, 1, 1/2, 1/4, 1/6, 1/8, 1/2, Rest(8)], inf),
 			// \dur, Pseq([2, 1, 1/2, 1/4, Rest(3)], inf),
 			\dur, Pseq([1/2, Rest(3)], inf),
-			\gain, 1.2,
+			\gain, 0.8,
 			\shape, 0.8,
 			\crush, Pwrand([50, 4], [20, 1].normalizeSum, inf),
 			\pan, 0.5,
@@ -861,13 +886,13 @@ Pdef(\oooh,
 			\s, \vocals,
 			\n, Pseq([Pwrand([4], [10].normalizeSum, inf)], inf),
 			\speed, Pseq([Prand([0.6, 0.1, 1.2])], inf),
-			\dur, Pseq([2, Rest(1)], inf),
+			\dur, Pseq([2, Rest(5)], inf),
 			\pan, Pseq([Prand([0, 0.25, 0.75, 1])], inf),
 			\room, Pseq([0.5, 0.25, 0], inf),
 			\size, Pseq([0.5, 0.25, 0], inf),
 			\delaytime, Pwrand([1/3, 1/8, 1/4, 1/2], [20, 15, 10, 15].normalizeSum, inf),
 			\delay, 0.8,
-			\delayfeedback, 0.7,
+			\delayfeedback, 0.6,
 			\gain, 0.85,
 			\orbit, ~out1
 		)
@@ -1121,6 +1146,7 @@ Pdef(\sands,
 			\n, 0,
 			\speed, Pseq([Prand([1, 0.4, 0.7, 1.4])], inf),
 			\dur, Pseq([5, 4, 3, 2, 1, Rest(8)], inf),
+			// \dur, Pseq([5, 4, 3, 2, 1], inf),
 			// \dur, 5,
 			// \pan, Pseq([Prand([0.75, 1])], inf),
 			// \resonance, Pseq([0.9, 0.2, 0.3], inf),
@@ -1128,12 +1154,12 @@ Pdef(\sands,
 			\phaserdepth, 0.2,
 			\room, Pseq([0.75, 0.25, 0], inf),
 			\size, Pseq([0.75, 0.25, 0], inf),
-			\shape, 0.5,
+			\shape, 0.1,
 			\hcutoff, Pseq([Prand([750, 900, 1200, 1500])], inf),
 			// \crush, Pwrand([50, 4], [20, 1].normalizeSum, inf),
 			// \crush, 4,
 			\pan, Pseq([Prand([0.1, 0.9])], inf),
-			\gain, Pseq([Prand([0.8, 0.8, 1.0, 1.2])]),
+			\gain, Pseq([Prand([0.8, 0.8, 1.0, 1.2])], inf),
 			\orbit, ~out1
 		)
 	])
@@ -1159,7 +1185,7 @@ Pdef(\bouncer,
 			\hcutoff, 300,
 			\cutoff, 4500,
 			\crush, Pwrand([50, 6], [20, 1].normalizeSum, inf),
-			\gain, Pseq([1.2, 0.7, 1], inf),
+			\gain, Pseq([1.0, 0.7, 1], inf),
 			\orbit, ~out1
 		)
 	])
@@ -1184,10 +1210,10 @@ Pdef(\spinner,
 
 			// \cutoff, 4500,
 			// \crush, Pwrand([50, 6], [20, 1].normalizeSum, inf),
-			// \delaytime, Pwrand([1/3, 1/8, 1/4, 1/2], [20, 15, 10, 15].normalizeSum, inf),
-			// \delay, 0.,
-			// \delayfeedback, 0.3,
-			\gain, Pseq([1.2, 0.7, 1.4], inf),
+			\delaytime, Pwrand([1/3, 1/8, 1/4, 1/2], [20, 15, 10, 15].normalizeSum, inf),
+			\delay, 0.8,
+			\delayfeedback, 0.3,
+			\gain, Pseq([0.9, 0.7, 0.8], inf),
 			\orbit, ~out1
 		)
 	])
@@ -1234,7 +1260,7 @@ Pdef(\crackle,
 			// \room, Pseq([0.55, 0.25, 0], inf),
 			// \size, Pseq([0.2, 0.55, 0.25, 0], inf),
 			\pan, Pseq([Prand([0.4, 0.6])], inf),
-			\gain, 0.9,
+			\gain, 0.8,
 			\orbit, ~out1
 		)
 	])
@@ -1254,7 +1280,7 @@ Pdef(\submsp,
 			\phaserrate, 0.4,
 			\phaserdepth, 0.6,
 			\shape, 0.1,
-			\gain, 1.7,
+			\gain, 1.3,
 			\orbit, ~out1
 		)
 	])
