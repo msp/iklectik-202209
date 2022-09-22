@@ -1,3 +1,6 @@
+PdefAllGui(Pdef.all.size);
+
+
 (
 Tdef(\x, {
 	var cps = 2;
@@ -12,11 +15,17 @@ Tdef(\x, {
 			resonance: 0.4.rand,
 			// cutoff: rrand(540, 1000),
 			// cutoff: rrand(540, 3000),
-			gain: 0.8)
+			shape: 0.5,
+			// crush: 4,
+			gain: 0.4,
+			delaytime: [0.25, 0.3].choose,
+			delay: 2,
+			delayfeedback: 0.6
+		)
 		);
-		// cps = cps + 0.3;
-		// (1/cps).wait;
-		(1/4.67).wait;
+		cps = cps + 0.2;
+		(1/cps).wait;
+		// (1/4.67).wait;
 		// (0.3 * [1, 2, 1/3]).choose.wait;
 	}
 }).play;
@@ -24,13 +33,13 @@ Tdef(\x, {
 
 (
 Tdef(\x, {
-	var cps = 2;
+	var cps = 1.5;
 	60.do {
 		~d1.((
 			// sound: 'sd:8',
-			sound: 'hh:0',
+			sound: 'hh:3',
 			begin: 0,
-			end: 1,
+			// end: 1,
 			speed: 1,
 			vowel: "aeiou".choose.asSymbol,
 			resonance: 0.4.rand,
@@ -38,9 +47,9 @@ Tdef(\x, {
 			// cutoff: rrand(540, 3000),
 			gain: 0.9)
 		);
-		// cps = cps + 0.3;
-		// (1/cps).wait;
-		(1/4.67).wait;
+		cps = cps + 0.3;
+		(1/cps).wait;
+		// (1/4.67).wait;
 		// (0.3 * [1, 2, 1/3]).choose.wait;
 	}
 }).play;
@@ -48,25 +57,27 @@ Tdef(\x, {
 
 Tdef(\x).stop;
 
+
+// The rider!!!!!
 (
 Tdef(\z, {
 	var name = '808cy:11';
 	var cps = 2;
-	40.do {
+	20.do {
 		~d1.(
 			(
 				cps:cps,
-				speed: 1.4,
+				speed: 1.2,
 				sound:name,
 				unit: \r,
-				// begin: rrand(0, 0.3),
-				begin: 0,
-				end: 1,
-				gain: 0.8
+				begin: rrand(0, 0.1),
+				// begin: 0,
+				// end: 1,
+				gain: 0.65
 
 			)
 		);
-		cps = cps + 0.03;
+		cps = cps + 0.1;
 		(1/cps).wait;
 	}
 }).play

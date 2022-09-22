@@ -44,7 +44,7 @@ var randWait = 2;
 		mixerSub = 0;
 
 		// Sometimes go very lowercase with <= 30 partials
-		if(0.45.coin) {
+		if(0.55.coin) {
 			n = (1..(numPartials.min(rrand(2, 30))));
 		} {
 			n = (1..numPartials);
@@ -93,10 +93,10 @@ var randWait = 2;
 		freqs = freq * n;
 
 
-		if(0.4.coin) {
+		if(0.8.coin) {
 			envTimeScale = rrand(3,8);
 		} {
-			envTimeScale = rrand(14, 27);
+			envTimeScale = rrand(15, 27);
 		};
 
 		//tilt EQ to roll off harsh highs
@@ -190,9 +190,9 @@ var randWait = 2;
 		pairs = pairsRand.collect{|x,i| [x[1], x[0]] };
 		pairs2 = pairsRand.collect{|x,i| [x[1], x[0]] };
 
-		// {
-		// 	Env.pairs(pairs, \exp).plot;
-		// }.defer;
+/*		{
+			Env.pairs(pairs, \exp).plot;
+		}.defer;*/
 
 		pairs.postln;
 
